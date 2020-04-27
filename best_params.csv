@@ -1,0 +1,9 @@
+0,1
+best_bs,5.0
+best_ts,30.0
+best_epochs,20.0
+best_nodes1,100.0
+best_nodes2,32.0
+best_layers,2.0
+best_dropout1,9.771988624212614e-05
+best_dropout2,0.22307688313236157
