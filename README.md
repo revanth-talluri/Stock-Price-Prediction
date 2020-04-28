@@ -34,6 +34,6 @@ project for their feedback connection ability. There are 4 main steps involved h
       The best set of params are chosen and the stock price for the next 30 days are predicted.
       
 Results: The predicted values are then compared with the original values. It is observed that
-         a) The model can predict the next 5 days values with a 5% error.
-         b) The next 10 days values with a 10% error.
+         a) The model can predict the next 3 days values with a 5% error.
+         b) The next 8 days values with a 10% error.
          c) And the next 30 days values with a 15% error.
