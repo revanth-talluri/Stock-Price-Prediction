@@ -1,5 +1,6 @@
 # stock-predictions
-Stock 'Close' price prediction using LSTM RNN's
+Stock 'Close' price prediction using LSTM RNN's 
+(with 3% error in 3 days and 15% error in 30 days)
 
 With the vast amount of data available in the Finance sector, it is one of the best places
 to explore and apply the ML techniques. Personally, the stock price prediction is one of 
@@ -34,6 +35,6 @@ project for their feedback connection ability. There are 4 main steps involved h
       The best set of params are chosen and the stock price for the next 30 days are predicted.
       
 Results: The predicted values are then compared with the original values. It is observed that
-         a) The model can predict the next 3 days values with a 5% error.
+         a) The model can predict the next 3 days values with a 3% error.
          b) The next 8 days values with a 10% error.
          c) And the next 30 days values with a 15% error.
