@@ -54,8 +54,7 @@ downside, i.e the trials are independent of each other.
 'Bayesian Optimzation' strategy builds a surrogate model that  tries to predict the 
 metrics and at each iteration, the surrogate becomes more and more confident about
 which new guesses can lead to the improvement. For more information on these, you can
-have a look at this simple yet interesting blog here.
-https://blog.floydhub.com/guide-to-hyperparameters-search-for-deep-learning-models/
+have a look at this simple yet interesting blog [here](https://blog.floydhub.com/guide-to-hyperparameters-search-for-deep-learning-models/).
 
 A search space is created using the params from the previous step as reference and the 
 'TPE'(Tree of Parzen Estimators) algorithm is used to build the surrogate model and 
