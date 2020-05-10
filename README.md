@@ -1,4 +1,4 @@
-# stock-predictions
+# Stock Price Prediction using LSTM (Long Short Term Memory) Nueral Networks
 Stock 'Close' price prediction using LSTM RNN's 
 (with 3% error in 3 days and 15% error in 30 days)
 
