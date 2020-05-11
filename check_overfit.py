@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat Apr 25 13:52:56 2020
-
 @author: revanth
 """
 
-
-#Linear algebra
+#linear algebra
 import numpy as np 
 import random
 
@@ -27,6 +25,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, LSTM
 from keras.layers import Flatten
 
+#For Statistics
 from sklearn.metrics import r2_score
 
 #avoid warnings
@@ -36,16 +35,14 @@ warnings.filterwarnings('ignore')
 #Setting the seed
 np.random.seed(1234)
 import tensorflow as tf
-#tf.random.set_seed(1000)
-tf.set_random_seed(1000)
+tf.random.set_seed(1000)
+#tf.set_random_seed(1000)
 
 #Functions from other files
 from General_model import build_model, get_accuracy
 
-
     
-def run(data_df, params):    
-    
+def run(data_df, params):
     
     new_data = pd.DataFrame(index=range(0,len(data_df)),columns=['Date', 'Close'])
     for i in range(0,len(data_df)):
@@ -68,7 +65,6 @@ def run(data_df, params):
     scaler.fit(train)
     scaled_data_train = scaler.transform(train)
     scaled_data_valid = scaler.transform(valid)
-
     
     model, history, X_test = build_model(train,valid,new_data,scaler,params,
                                          scaled_data_train,scaled_data_valid)
@@ -85,7 +81,6 @@ def run(data_df, params):
     
     rms, r = get_accuracy(train,valid,new_data,tl,
                           scaler,model,X_test)
-
     
     #Adding errors to the above dataframe    
     errors = {'RMS': rms,
@@ -97,8 +92,6 @@ def run(data_df, params):
     errors_df.columns = ['Attribute','Value']
     
     return errors_df, train_loss, test_loss
-
-
 
 def get_params():
     
@@ -112,7 +105,6 @@ def get_params():
     
         return params
 
-
 if __name__ == '__main__':
     
     #company  = input('Name of the company: ')
@@ -124,11 +116,6 @@ if __name__ == '__main__':
     
     #Defining the initial parameters of the model    
     params = get_params()
-
     errors_df, train_loss, test_loss = run(data_df, params)
     
     print(errors_df)
-    
-
-    
- 

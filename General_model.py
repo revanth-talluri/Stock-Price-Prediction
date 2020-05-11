@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat Apr 25 19:06:26 2020
-
 @author: revan
 """
 
-#Linear algebra
+#linear algebra
 import numpy as np 
-import random
 
-
-# data processing
+#data processing
 import pandas as pd 
 pd.set_option('display.max_columns', 15)
 
@@ -22,28 +19,31 @@ from matplotlib import style
 #for normalizing data
 from sklearn.preprocessing import MinMaxScaler
 
+#For Statistics
+from sklearn.metrics import r2_score
+
 #avoid warnings
 import warnings
 warnings.filterwarnings('ignore')
 
-from sklearn.preprocessing import MinMaxScaler
+#to create nueral network
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, LSTM
 
-from sklearn.metrics import r2_score
-
-
-#Setting the seed
+#setting the seed
+import random
 np.random.seed(1234)
 import tensorflow as tf
-tf.set_random_seed(1000)
-
+#tf.set_random_seed(1000)
+tf.random.set_seed(1000)
 
 
 def build_model(train,valid,new_data,scaler,params,
-                scaled_data_train,scaled_data_valid):
+                scaled_data_train,scaled_data_valid):    
     
-    
+    #creating the training set in the required format
+    #we will put together 60 days (offset) of data together and treat that as single input 
+    #and the target value is the 'Close' price on the next day
     x_train, y_train = [], []
     for i in range(params['offset'],len(train)):
         x_train.append(scaled_data_train[i-params['offset']:i,0])
@@ -55,6 +55,7 @@ def build_model(train,valid,new_data,scaler,params,
     #scale = MinMaxScaler(feature_range=(0,1))
     #scale.min_, scale.scale_ = scaler.min_, scaler.scale_
     
+    #creating a new dataframe which will be used to create the test set
     inputs = new_data[len(new_data) - len(valid) - params['offset']:].values
     inputs = inputs.reshape(-1,1)
     inputs = scaler.transform(inputs)
@@ -65,10 +66,12 @@ def build_model(train,valid,new_data,scaler,params,
         Y_test.append(inputs[i,0])
         
     X_test, Y_test = np.array(X_test), np.array(Y_test)
-    X_test = np.reshape(X_test, (X_test.shape[0],X_test.shape[1],1))
-    
+    X_test = np.reshape(X_test, (X_test.shape[0],X_test.shape[1],1))    
     
     #create and fit the LSTM network
+    #we are building a general model here. This section of code will be used in further steps
+    #where we will check if only 1 hidden layer can give better results
+    #so an if-else loop is created to combat that situaiton
     if params['units_2'] != 0:
         
         model = Sequential()
@@ -95,7 +98,6 @@ def build_model(train,valid,new_data,scaler,params,
 
 def get_accuracy(train,valid,new_data,tl, 
                  scaler,model,X_test):
-
     
     closing_price = model.predict(X_test)
     closing_price = scaler.inverse_transform(closing_price)
@@ -119,9 +121,7 @@ def get_accuracy(train,valid,new_data,tl,
     y_pred = valid['Predictions']
     r = r2_score(y_true, y_pred)
     
-    return rms[0], r
-
-  
+    return rms[0], r  
    
 def run(data_df, params):    
     
@@ -130,15 +130,20 @@ def run(data_df, params):
     plt.plot(data_df['Close'], label='Close Price history')
     plt.title('Close Price History')
     
+    #In our model, we will try to predict the future close price of a stock using only the past
+    #close prices of that particular stock. So let's a create a new dataframe with only the
+    #'Date' and 'Close' price columns
     new_data = pd.DataFrame(index=range(0,len(data_df)),columns=['Date', 'Close'])
     for i in range(0,len(data_df)):
         new_data['Date'][i]  = data_df.index[i]
         new_data['Close'][i] = data_df['Close'][i]
         
-    #setting index
+    #setting 'Date' column as index and dropping the original column
     new_data.index = new_data.Date
     new_data.drop('Date', axis=1, inplace=True)
     
+    #80% of the data is used as training set and 20% as test set
+    #'test set' here is referred to as 'validatation set'
     frac = 0.8
     tl = int(len(new_data)*frac)
     
@@ -151,15 +156,16 @@ def run(data_df, params):
     scaler.fit(train)
     scaled_data_train = scaler.transform(train)
     scaled_data_valid = scaler.transform(valid)
-
     
+    #building the LSTM model
     model, history, X_test = build_model(train,valid,new_data,scaler,params,
                                          scaled_data_train,scaled_data_valid)
     
+    #getting the 'RMSE error' and 'R-squared value'
     rms, r = get_accuracy(train,valid,new_data,tl,
                           scaler,model,X_test)
     
-    #Changing params to dataframe to store all the data
+    #Conveting the params in dictionary to dataframe, to store all the data
     params_items = params.items()
     params_list  = list(params_items)    
     params_df = pd.DataFrame(params_list, index=params.keys())
@@ -175,7 +181,6 @@ def run(data_df, params):
     result_df = result_df.drop([0], axis=1)
     
     return result_df
-
 
 
 if __name__ == '__main__':
@@ -194,14 +199,10 @@ if __name__ == '__main__':
               'units_2':32,
               'drop_rate_2':0,
               'batch_size':5,
-              'epochs':10}
-    
+              'epochs':10}    
 
     result_df = run(data_df, params)
     
+    #Printing the params and errors
     print(result_df)
-    
-
-    
- 
-    
+      

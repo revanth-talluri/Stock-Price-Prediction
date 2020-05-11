@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat Apr 18 23:00:22 2020
-
 @author: revan
 """
 
 #Linear algebra
 import numpy as np 
-import random
+
 
 # data processing
 import pandas as pd 
@@ -35,19 +34,17 @@ from keras.layers import Dense, Dropout, LSTM
 from datetime import datetime
 
 #Setting the seed
+import random
 np.random.seed(1234)
 import tensorflow as tf
-#tf.random.set_seed(1000)
-tf.set_random_seed(1000)
+tf.random.set_seed(1000)
+#tf.set_random_seed(1000)
 
 #Functions from other files
 from check_overfit import get_params
 
 
-
-
-def build_model(train,params,scaled_data_train):
-    
+def build_model(train,params,scaled_data_train):    
     
     x_train, y_train = [], []
     for i in range(params['offset'],len(train)):
@@ -55,8 +52,7 @@ def build_model(train,params,scaled_data_train):
         y_train.append(scaled_data_train[i,0])
         
     x_train, y_train = np.array(x_train), np.array(y_train)
-    x_train = np.reshape(x_train, (x_train.shape[0],x_train.shape[1],1))
-    
+    x_train = np.reshape(x_train, (x_train.shape[0],x_train.shape[1],1))    
     
     #create and fit the LSTM network
     if params['units_2'] != 0:
@@ -86,10 +82,12 @@ def build_model(train,params,scaled_data_train):
 
 def predict(params,new_data,scaler,model):
     
+    #pred_input is the first set of values used for future-prediction
     pred_input = new_data[-params['offset']:].values
     pred_input = pred_input.reshape(-1,1)
     pred_input = scaler.transform(pred_input)
     
+    #y_hat is used to store the predicted-future close price values
     y_hat  = []
     pred_input = pred_input.tolist()
     
@@ -101,6 +99,9 @@ def predict(params,new_data,scaler,model):
         X_pred = np.reshape(X_pred, (X_pred.shape[0],X_pred.shape[1],1)) 
         output = model.predict(X_pred)
         y_hat.append(output[0,0])
+        
+        #popping the first element and adding the new predicted value at the end 
+        #and using this new pred_input list for the next day prediction
         pred_input.pop(0)
         pred_input.append([output[0,0]])        
     
@@ -108,9 +109,7 @@ def predict(params,new_data,scaler,model):
     y_hat = np.reshape(y_hat, (y_hat.shape[0],1))    
     y_hat = scaler.inverse_transform(y_hat)
     
-    return y_hat
-
-  
+    return y_hat  
    
 def run(data_df, params):    
     
@@ -137,13 +136,10 @@ def run(data_df, params):
     scaler = MinMaxScaler(feature_range=(0,1))
     scaler.fit(train)
     scaled_data_train = scaler.transform(train)
-
     
     model, history = build_model(train,params,scaled_data_train)
     
     return predict(params,new_data,scaler,model)
-
-
 
 if __name__ == '__main__':
     
@@ -158,8 +154,8 @@ if __name__ == '__main__':
     params = get_params() 
     params.update({'future_days':30})
     
-    result = run(data_df, params)
-    
+    #this 'result' contains the predicted close prices for the next 30 days (future_days)
+    result = run(data_df, params)    
     
     result = np.reshape(result,(result.shape[0]))
     result = list(result)    
@@ -170,6 +166,4 @@ if __name__ == '__main__':
   
     result_df.to_csv (r'C:\Users\shaik\Downloads\Revanth\Project-Google\future_prices.csv', 
                       index = True, header=True)
-    
-    
     
