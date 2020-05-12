@@ -97,7 +97,7 @@ The predicted values are compared with the original values. It is observed that
 For this model, only the 'Close' prices are taken as input and future 'Close' price is predicted.
 But in reality, there will be many more variables like 'Open' price, 'Volume' traded etc that
 effect the 'Close' price. Then our model has to deal with multi-variable input/output scenario.
-You can check this in my other repository. Pelase note that those scenarios do not have an 
+You can check this in my [other repository](https://github.com/revanth-talluri/Multivariate-input-price-prediction). Pelase note that those scenarios do not have an 
 in-depth exploration like we have seen here.
 
 
