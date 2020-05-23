@@ -37,7 +37,7 @@ import tensorflow as tf
 #tf.set_random_seed(1000)
 tf.random.set_seed(1000)
 
-
+#this funtion builds our LSTM model
 def build_model(train,valid,new_data,scaler,params,
                 scaled_data_train,scaled_data_valid):    
     
@@ -72,7 +72,7 @@ def build_model(train,valid,new_data,scaler,params,
     #we are building a general model here. This section of code will be used in further steps
     #where we will check if only 1 hidden layer can give better results
     #so an if-else loop is created to combat that situaiton
-    if params['units_2'] != 0:
+    if (params['units_2']):
         
         model = Sequential()
         model.add(LSTM(units=params['units_1'], return_sequences=True, 
@@ -91,11 +91,14 @@ def build_model(train,valid,new_data,scaler,params,
         model.add(Dense(1))
     
     model.compile(loss='mean_squared_error', optimizer='adam')
-    history = model.fit(x_train, y_train, epochs=params['epochs'], batch_size=params['batch_size'], 
-                        verbose=1, validation_data=[X_test, Y_test])
+    history = model.fit(x_train, y_train, epochs=params['epochs'], verbose=1,
+                        batch_size=params['batch_size'], 
+                        validation_data=[X_test, Y_test])
     
     return model, history, X_test
 
+
+#predicting our model accuracy
 def get_accuracy(train,valid,new_data,tl, 
                  scaler,model,X_test):
     
@@ -123,6 +126,7 @@ def get_accuracy(train,valid,new_data,tl,
     
     return rms[0], r  
    
+
 def run(data_df, params):    
     
     #Plot the data and check if there are any unexpected anamolies(sudden spikes or dips)
@@ -183,6 +187,7 @@ def run(data_df, params):
     return result_df
 
 
+#'main' program
 if __name__ == '__main__':
     
     #company  = input('Name of the company: ')

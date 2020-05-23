@@ -93,6 +93,8 @@ def run(data_df, params):
     
     return errors_df, train_loss, test_loss
 
+#get the parameters from here
+#we can change the parameters directly here
 def get_params():
     
         params = {'offset':60,
@@ -105,6 +107,7 @@ def get_params():
     
         return params
 
+#'main' program
 if __name__ == '__main__':
     
     #company  = input('Name of the company: ')

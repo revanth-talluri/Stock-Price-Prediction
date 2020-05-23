@@ -7,6 +7,8 @@ Created on Sun Apr 26 12:56:05 2020
 #linear algebra
 import numpy as np 
 import csv 
+import os, sys
+from pathlib import Path, PureWindowsPath
 
 # data processing
 import pandas as pd 
@@ -45,6 +47,7 @@ tf.random.set_seed(1000)
 #tf.set_random_seed(1000)
 
 
+#getting the 'train' and 'test' inputs for the nueral network
 def data(batch_size, offset, scaled_data_train, scaled_data_valid):
 
     #function that returns data to be fed into objective function and 
@@ -82,7 +85,8 @@ def data(batch_size, offset, scaled_data_train, scaled_data_valid):
     
     return x_train, y_train, X_test, Y_test
 
-#defining our search space, the parameters over which the model will run and give the best possible set
+#defining our search space, the parameters over which the model will run 
+#and give the best possible set of parameters
 search_space = {
     'batch_size': hp.choice('batch_size', [1,5,10]),
     'offset': hp.choice('offset', [30,45,60,90]),
@@ -101,6 +105,8 @@ search_space = {
     "epochs": hp.choice('epochs', [1,5,10,20])
 }
 
+
+#creating the model for the Bayesian Optimzation
 def create_model_hypopt(params):
     
     #This method is called for each combination of parameter set to train the model 
@@ -142,7 +148,8 @@ def create_model_hypopt(params):
     
     return {'loss': rms, 'status': STATUS_OK, 'model': model}  
 
-    
+
+#'main' program
 if __name__ == '__main__':
 
     data_df = pd.read_csv('Google15-20.csv', index_col='Date', parse_dates=True)
@@ -192,7 +199,7 @@ if __name__ == '__main__':
                   space=search_space,
                   algo=tpe.suggest,  # type random.suggest to select param values randomly
                   max_evals=100,     # max number of evaluations you want to do on objective function
-                  trials=trials)    
+                  trials=trials)  
     
     if len(best)>6:
         best_params = {'best_bs':vals['batch_size'][best['batch_size']],
@@ -216,9 +223,12 @@ if __name__ == '__main__':
     params_items = best_params.items()
     params_list  = list(params_items)
     
+    BASE_PATH = os.getcwd()
+    script_folder  = Path(os.getcwd())
+    params_to_store = script_folder / 'best_params.csv'
+    
     params_df = pd.DataFrame(params_list)
-    params_df.to_csv (r'C:\Users\shaik\Downloads\Revanth\Project-Google\best_params.csv', 
-                      index = False, header=True)
+    params_df.to_csv (params_to_store, index = False, header=True)
     
     #initialize empty lists to store the set of parameters that our model has searched
     bs, ts, ep, nuerons_1, nuerons_2, num_layers, drop_1, drop_2, loss = [],[],[],[],[],[],[],[],[]
@@ -251,7 +261,9 @@ if __name__ == '__main__':
                   'lstm1_dropouts','lstm2_dropouts','loss']
     df.sort_values(['loss'], axis=0, ascending=True, inplace=True)
     
+    
+    path_to_store  = script_folder / 'trials_data.csv'
+    
     #store all the results in a .csv file for future reference
-    df.to_csv (r'C:\Users\shaik\Downloads\Revanth\Project-Google\trials_data.csv', 
-                      index = False, header=True)
+    df.to_csv (path_to_store, index = False, header=True)
                 

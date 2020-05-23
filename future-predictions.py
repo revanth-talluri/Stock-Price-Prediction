@@ -44,6 +44,7 @@ tf.random.set_seed(1000)
 from check_overfit import get_params
 
 
+#building the model for the price prediction
 def build_model(train,params,scaled_data_train):    
     
     x_train, y_train = [], []
@@ -80,6 +81,7 @@ def build_model(train,params,scaled_data_train):
     return model, history
 
 
+#predicting the 'future prices' for the next 30 days
 def predict(params,new_data,scaler,model):
     
     #pred_input is the first set of values used for future-prediction
@@ -111,6 +113,7 @@ def predict(params,new_data,scaler,model):
     
     return y_hat  
    
+
 def run(data_df, params):    
     
     #Plot the data and check if there are any unexpected anamolies(sudden spikes or dips)
@@ -141,6 +144,8 @@ def run(data_df, params):
     
     return predict(params,new_data,scaler,model)
 
+
+#'main' program
 if __name__ == '__main__':
     
     #company  = input('Name of the company: ')
@@ -160,10 +165,14 @@ if __name__ == '__main__':
     result = np.reshape(result,(result.shape[0]))
     result = list(result)    
     
+    #Prediction for the month of April
     dates = pd.date_range('2020-04-01', periods=params['future_days'], freq='D')
     result_df = pd.DataFrame([dates, result]).transpose()
     result_df.columns = ['Date','Predicted Close Price']
+    
+    BASE_PATH = os.getcwd()
+    script_folder  = Path(os.getcwd())
+    params_to_store = script_folder / 'future_prices.csv'
   
-    result_df.to_csv (r'C:\Users\shaik\Downloads\Revanth\Project-Google\future_prices.csv', 
-                      index = True, header=True)
+    result_df.to_csv (params_to_store, index = True, header=True)
     
