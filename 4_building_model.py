@@ -139,7 +139,7 @@ if __name__ == '__main__':
     model = run(data_df, params)    
     
     BASE_PATH = os.getcwd()
-    script_folder   = Path(os.getcwd())
+    script_folder = Path(os.getcwd())
     path = script_folder / 'model.h5'
     
     model.save(path)
