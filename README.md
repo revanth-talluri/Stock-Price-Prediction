@@ -9,7 +9,8 @@ the interesting areas for me.
 The project tries to predict the stock close prices of Google(Aplhabet) for the month of
 April, 2020 using the LSTM (Long Short Term Memory cells) RNN's. 
 
-The data is taken from the Yahoo Finance between 2015/04/01 and 2020/03/31. The sudden 
+The data is taken from the Yahoo Finance between 2015/04/01 and 2020/03/31. I have used
+'pandas_datareader' to get the historical data of the stocks used here. The sudden 
 rise and dips in the data (if any) are assumed to be free of any external factors (Though
 this is not true, and especially the given time frame includes the effect of Covid-19).
 The idea here is to try and build a model that can take even a small amount of data and 
