@@ -17,12 +17,12 @@ can predict the future movement of prices with good accuracy assuming that it is
 any and all external factors.
 
 Though SVM's can be used for their fast and simple application, LSTM's are used in this 
-project for their feedback connection ability. There are 4 main steps involved here:
+project for their feedback connection ability. There are 5 main steps involved here:
 
 - Building a General model
 - Optimization of the model hyperparameters
 - Check for the overfit/underfit 
-- Predicting the future stock price
+- Predicting the future stock price 
 
 Let's see what is done in each step.
 
@@ -76,7 +76,7 @@ then the model is performing well. Else, we have to ignore these set of params, 
 to the next set of params. In our case, the training loss and test loss is converging and
 we will move forward with these set of params.
 
-## Predicting the future stock price
+## Predicting the future stock price 
 Taking the params from the previous step, we will predict the stock prices for the next 30
 days. Now the entire data is used to train the model. Let's say that our objective is to 
 predict the price from Day 1 to Day 30. We will use the last 60 days (offset) data to predict
